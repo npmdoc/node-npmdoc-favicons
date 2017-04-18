@@ -1,4 +1,4 @@
-<div class="apidocDiv">
+<html><head></head><body><div class="apidocDiv">
 <style>
 /*csslint
 */
@@ -47,17 +47,10 @@
 }
 </style>
 <h1>api documentation for
-    <a
-
-        href="https://github.com/haydenbleasel/favicons"
-
-    >favicons (v4.8.3)</a>
+    <a href="https://github.com/haydenbleasel/favicons">favicons (v4.8.3)</a>
 </h1>
 <h4>Favicon generator for Node.js</h4>
-<div class="apidocSectionDiv"><a
-    href="#apidoc.tableOfContents"
-    id="apidoc.tableOfContents"
-><h1>table of contents</h1></a><ol>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
 
     <li class="apidocModuleLi"><a href="#apidoc.module.favicons">module favicons</a><ol>
 
@@ -220,14 +213,14 @@
 
     const config = clone(configDefaults),
         options = _.mergeDefaults(parameters || {}, config.defaults),
-        µ = helpers(options),
-        background = µ.General.background(options.background);
+        Âµ = helpers(options),
+        background = Âµ.General.background(options.background);
 
     function createFavicon (sourceset, properties, name, platformOptions, callback) {
-        if (path.extname(name) === &#x27;.ico&#x27;) {
+        if (path.extname(name) === '.ico') {
             async.map(
                 properties.sizes,
-                (sizeProperties, cb) =&#x3e; {
+                (sizeProperties, cb) =&gt; {
                     const newProperties = clone(properties);
 
                     newProperties.width = sizeProperties.width;
@@ -237,15 +230,15 @@
 
                     createFavicon(sourceset, newProperties, tempName, platformOptions, cb);
                 },
-                (error, results) =&#x3e; {
+                (error, results) =&gt; {
                     if (error) {
                         return callback(error);
                     }
 
-                    const files = results.map((icoImage) =&#x3e; icoImage.contents);
+                    const files = results.map((icoImage) =&gt; icoImage.contents);
 
                     toIco(files)
-                        .then((buffer) =&#x3e; callback(null, { name, contents: buffer }))
+                        .then((buffer) =&gt; callback(null, { name, contents: buffer }))
                         .catch(callback);
                 }
             );
@@ -254,21 +247,21 @@
                 offset = Math.round(maximum / 100 * platformOptions.offset) || 0;
 
             async.waterfall([
-                (cb) =&#x3e;
-                    µ.Images.nearest(sourceset, properties, offset, cb),
-                (nearest, cb) =&#x3e;
-                    µ.Images.read(nearest.file, cb),
-                (buffer, cb) =&#x3e;
-                    µ.Images.resize(buffer, properties, offset, cb),
-                (resizedBuffer, cb) =&#x3e;
-                    µ.Images.create(properties, background, (error, canvas) =&#x3e;
+                (cb) =&gt;
+                    Âµ.Images.nearest(sourceset, properties, offset, cb),
+                (nearest, cb) =&gt;
+                    Âµ.Images.read(nearest.file, cb),
+                (buffer, cb) =&gt;
+                    Âµ.Images.resize(buffer, properties, offset, cb),
+                (resizedBuffer, cb) =&gt;
+                    Âµ.Images.create(properties, background, (error, canvas) =&gt;
                         cb(error, resizedBuffer, canvas)),
-                (resizedBuffer, canvas, cb) =&#x3e;
-                    µ.Images.composite(canvas, resizedBuffer, properties, offset, maximum, cb),
-                (composite, cb) =&#x3e; {
-                    µ.Images.getBuffer(composite, cb);
+                (resizedBuffer, canvas, cb) =&gt;
+                    Âµ.Images.composite(canvas, resizedBuffer, properties, offset, maximum, cb),
+                (composite, cb) =&gt; {
+                    Âµ.Images.getBuffer(composite, cb);
                 }
-            ], (error, buffer) =&#x3e;
+            ], (error, buffer) =&gt;
                 callback(error, { name, contents: buffer }));
         }
 
@@ -277,50 +270,50 @@
     function createHTML (platform, callback) {
         const html = [];
 
-        async.forEachOf(config.html[platform], (tag, selector, cb) =&#x3e;
-            µ.HTML.parse(tag, (error, metadata) =&#x3e;
-                cb(html.push(metadata) &#x26;&#x26; error)),
-        (error) =&#x3e;
+        async.forEachOf(config.html[platform], (tag, selector, cb) =&gt;
+            Âµ.HTML.parse(tag, (error, metadata) =&gt;
+                cb(html.push(metadata) &amp;&amp; error)),
+        (error) =&gt;
             callback(error, html));
     }
 
     function createFiles (platform, callback) {
         const files = [];
 
-        async.forEachOf(config.files[platform], (properties, name, cb) =&#x3e;
-            µ.Files.create(properties, name, (error, file) =&#x3e;
-                cb(files.push(file) &#x26;&#x26; error)),
-        (error) =&#x3e;
+        async.forEachOf(config.files[platform], (properties, name, cb) =&gt;
+            Âµ.Files.create(properties, name, (error, file) =&gt;
+                cb(files.push(file) &amp;&amp; error)),
+        (error) =&gt;
             callback(error, files));
     }
 
     function createFavicons (sourceset, platform, platformOptions, callback) {
         const images = [];
 
-        async.forEachOf(config.icons[platform], (properties, name, cb) =&#x3e;
-            createFavicon(sourceset, properties, name, platformOptions, (error, image) =&#x3e;
-                cb(images.push(image) &#x26;&#x26; error)),
-        (error) =&#x3e;
+        async.forEachOf(config.icons[platform], (properties, name, cb) =&gt;
+            createFavicon(sourceset, properties, name, platformOptions, (error, image) =&gt;
+                cb(images.push(image) &amp;&amp; error)),
+        (error) =&gt;
             callback(error, images));
     }
 
     function createPlatform (sourceset, platform, platformOptions, callback) {
         async.parallel([
-            (cb) =&#x3e;
+            (cb) =&gt;
                 createFavicons(sourceset, platform, platformOptions, cb),
-            (cb) =&#x3e;
+            (cb) =&gt;
                 createFiles(platform, cb),
-            (cb) =&#x3e;
+            (cb) =&gt;
                 createHTML(platform, cb)
-        ], (error, results) =&#x3e;
+        ], (error, results) =&gt;
             callback(error, results[0], results[1], results[2]));
     }
 
     function createOffline (sourceset, callback) {
         const response = { images: [], files: [], html: [] };
 
-        async.forEachOf(options.icons, (enabled, platform, cb) =&#x3e; {
-            const platformOptions = µ.General.preparePlatformOptions(platform, enabled);
+        async.forEachOf(options.icons, (enabled, platform, cb) =&gt; {
+            const platformOptions = Âµ.General.preparePlatformOptions(platform, enabled);
 
             if (enabled) { ...</pre></li>
     <li>example usage<pre class="apidocCodePre">n/a</pre></li>
@@ -339,18 +332,18 @@
 
     var config = clone(configDefaults),
         options = _.mergeDefaults(parameters || {}, config.defaults),
-        µ = helpers(options),
-        background = µ.General.background(options.background);
+        Âµ = helpers(options),
+        background = Âµ.General.background(options.background);
 
     function createFavicon(sourceset, properties, name, platformOptions, callback) {
-        if (path.extname(name) === &#x27;.ico&#x27;) {
+        if (path.extname(name) === '.ico') {
             async.map(properties.sizes, function (sizeProperties, cb) {
                 var newProperties = clone(properties);
 
                 newProperties.width = sizeProperties.width;
                 newProperties.height = sizeProperties.height;
 
-                var tempName = &#x27;favicon-temp-&#x27; + newProperties.width + &#x27;x&#x27; + newProperties.height + &#x27;.png&#x27;;
+                var tempName = 'favicon-temp-' + newProperties.width + 'x' + newProperties.height + '.png';
 
                 createFavicon(sourceset, newProperties, tempName, platformOptions, cb);
             }, function (error, results) {
@@ -372,19 +365,19 @@
                     offset = Math.round(maximum / 100 * platformOptions.offset) || 0;
 
                 async.waterfall([function (cb) {
-                    return µ.Images.nearest(sourceset, properties, offset, cb);
+                    return Âµ.Images.nearest(sourceset, properties, offset, cb);
                 }, function (nearest, cb) {
-                    return µ.Images.read(nearest.file, cb);
+                    return Âµ.Images.read(nearest.file, cb);
                 }, function (buffer, cb) {
-                    return µ.Images.resize(buffer, properties, offset, cb);
+                    return Âµ.Images.resize(buffer, properties, offset, cb);
                 }, function (resizedBuffer, cb) {
-                    return µ.Images.create(properties, background, function (error, canvas) {
+                    return Âµ.Images.create(properties, background, function (error, canvas) {
                         return cb(error, resizedBuffer, canvas);
                     });
                 }, function (resizedBuffer, canvas, cb) {
-                    return µ.Images.composite(canvas, resizedBuffer, properties, offset, maximum, cb);
+                    return Âµ.Images.composite(canvas, resizedBuffer, properties, offset, maximum, cb);
                 }, function (composite, cb) {
-                    µ.Images.getBuffer(composite, cb);
+                    Âµ.Images.getBuffer(composite, cb);
                 }], function (error, buffer) {
                     return callback(error, { name: name, contents: buffer });
                 });
@@ -396,8 +389,8 @@
         var html = [];
 
         async.forEachOf(config.html[platform], function (tag, selector, cb) {
-            return µ.HTML.parse(tag, function (error, metadata) {
-                return cb(html.push(metadata) &#x26;&#x26; error);
+            return Âµ.HTML.parse(tag, function (error, metadata) {
+                return cb(html.push(metadata) &amp;&amp; error);
             });
         }, function (error) {
             return callback(error, html);
@@ -408,8 +401,8 @@
         var files = [];
 
         async.forEachOf(config.files[platform], function (properties, name, cb) {
-            return µ.Files.create(properties, name, function (error, file) {
-                return cb(files.push(file) &#x26;&#x26; error);
+            return Âµ.Files.create(properties, name, function (error, file) {
+                return cb(files.push(file) &amp;&amp; error);
             });
         }, function (error) {
             return callback(error, files);
@@ -421,7 +414,7 @@
 
         async.forEachOf(config.icons[platform], function (properties, name, cb) {
             return createFavicon(sourceset, properties, name, platformOptions, function (error, image) {
-                return cb(images.push(image) &#x26;&#x26; error);
+                return cb(images.push(image) &amp;&amp; error);
             });
         }, function (error) {
             return callback(error, images);
@@ -451,21 +444,21 @@
     <li>description and source-code<pre class="apidocCodePre">function helpers(options) {
 
     function contains (array, element) {
-        return array.indexOf(element.toLowerCase()) &#x3e; NON_EXISTANT;
+        return array.indexOf(element.toLowerCase()) &gt; NON_EXISTANT;
     }
 
     function relative (directory) {
-        return path.join(options.path, directory).replace(/\\/g, &#x27;/&#x27;);
+        return path.join(options.path, directory).replace(/\\/g, '/');
     }
 
     function print (context, message) {
-        let newMessage = &#x27;&#x27;;
+        let newMessage = '';
 
-        if (options.logging &#x26;&#x26; message) {
-            _.each(message.split(&#x27; &#x27;), (item) =&#x3e; {
+        if (options.logging &amp;&amp; message) {
+            _.each(message.split(' '), (item) =&gt; {
                 newMessage += ` ${ ((/^\d+x\d+$/gm).test(item) ? colors.magenta(item) : item) }`;
             });
-            console.log(`${ colors.green(&#x27;[Favicons]&#x27;) } ${ context.yellow }:${ newMessage }...`);
+            console.log(`${ colors.green('[Favicons]') } ${ context.yellow }:${ newMessage }...`);
         }
     }
 
@@ -475,11 +468,11 @@
 
     function updateDocument (document, code, tags, next) {
         const $ = cheerio.load(document, { decodeEntities: false }),
-            target = $(&#x27;head&#x27;).length &#x3e; 0 ? $(&#x27;head&#x27;) : $.root(),
-            newCode = cheerio.load(code.join(&#x27;\n&#x27;), { decodeEntities: false });
+            target = $('head').length &gt; 0 ? $('head') : $.root(),
+            newCode = cheerio.load(code.join('\n'), { decodeEntities: false });
 
-        async.each(tags, (platform, callback) =&#x3e; {
-            async.forEachOf(platform, (tag, selector, cb) =&#x3e; {
+        async.each(tags, (platform, callback) =&gt; {
+            async.forEachOf(platform, (tag, selector, cb) =&gt; {
                 if (options.replace) {
                     $(selector).remove();
                 } else if ($(selector).length) {
@@ -487,27 +480,27 @@
                 }
                 return cb(null);
             }, callback);
-        }, (error) =&#x3e; {
+        }, (error) =&gt; {
             target.append(newCode.html());
-            return next(error, $.html().replace(/^\s*$[\n\r]{1,}/gm, &#x27;&#x27;));
+            return next(error, $.html().replace(/^\s*$[\n\r]{1,}/gm, ''));
         });
     }
 
     function preparePlatformOptions(platform, options) {
-        if (typeof options != &#x27;object&#x27;) {
+        if (typeof options != 'object') {
             options = {};
         }
 
-        _.each(options, (value, key) =&#x3e; {
+        _.each(options, (value, key) =&gt; {
             let platformOptionsRef = PLATFORM_OPTIONS[key];
 
-            if (typeof platformOptionsRef == &#x27;undefined&#x27; || platformOptionsRef.platforms.indexOf(platform) == -1) {
+            if (typeof platformOptionsRef == 'undefined' || platformOptionsRef.platforms.indexOf(platform) == -1) {
                 return Reflect.deleteProperty(options, key);
             }
         });
 
-        _.each(PLATFORM_OPTIONS, ({ platforms, defaultTo }, key) =&#x3e; {
-            if (typeof options[key] == &#x27;undefined&#x27; &#x26;&#x26; platforms.indexOf(platform) != -1) {
+        _.each(PLATFORM_OPTIONS, ({ platforms, defaultTo }, key) =&gt; {
+            if (typeof options[key] == 'undefined' &amp;&amp; platforms.indexOf(platform) != -1) {
                 options[key] = defaultTo;
             }
         });
@@ -519,24 +512,24 @@
 
         General: {
             preparePlatformOptions: preparePlatformOptions,
-            background: (hex) =&#x3e; {
-                print(&#x27;General:background&#x27;, `Parsing colour ${ hex }`);
+            background: (hex) =&gt; {
+                print('General:background', `Parsing colour ${ hex }`);
                 const rgba = color(hex).toRgb();
 
                 return Jimp.rgbaToInt(rgba.r, rgba.g, rgba.b, rgba.a * HEX_MAX);
             },
-            source: (source, callback) =&#x3e; {
+            source: (source, callback) =&gt; {
                 let sourceset = [];
 
-                print(&#x27;General:source&#x27;, `Source type is ${ typeof source }`);
+                print('General:source', `Source type is ${ typeof source }`);
                 if (!source || !source.length) {
-                    return callback(&#x27;No source provided&#x27;);
+                    return callback('No source provided');
                 } else if (Buffer.isBuffer(source)) {
                     sourceset = [{ size: sizeOf(source), file: source }];
                     callback(null, sourceset);
                 } else if (Array.isArray(source)) {
-                    async.each(source, (file, cb) =&#x3e;
-                        readFile(file, (error, buffer) =&#x3e; {
+                    async.each(source, (file, cb) =&gt;
+                        readFile(file, (error, buffer) =&gt; {
                             if (error) {
                                 return cb(error);
                             }
@@ -547,11 +540,11 @@
                             });
                             cb(null);
                         }),
-                        (error) =&#x3e;
-                            callback(error || sourceset.length ? null : &#x27;Favicons source is invalid&#x27;, sourceset)
+                        (error) =&gt;
+                            callback(error || sourceset.length ? null : 'Favicons source is invalid', sourceset)
                     );
-                } else if (typeof source === &#x27;string&#x27;) {
-                    readFile(source, (error, buffer) =&#x3e; {
+                } else if (typeof source === 'string') {
+                    readFile(source, (error, buffer) =&gt; {
                         if (error) {
                             return callback(error);
                         }
@@ -573,21 +566,21 @@
     <li>description and source-code<pre class="apidocCodePre">function helpers(options) {
 
     function contains(array, element) {
-        return array.indexOf(element.toLowerCase()) &#x3e; NON_EXISTANT;
+        return array.indexOf(element.toLowerCase()) &gt; NON_EXISTANT;
     }
 
     function relative(directory) {
-        return path.join(options.path, directory).replace(/\\/g, &#x27;/&#x27;);
+        return path.join(options.path, directory).replace(/\\/g, '/');
     }
 
     function print(context, message) {
-        var newMessage = &#x27;&#x27;;
+        var newMessage = '';
 
-        if (options.logging &#x26;&#x26; message) {
-            _.each(message.split(&#x27; &#x27;), function (item) {
-                newMessage += &#x27; &#x27; + (/^\d+x\d+$/gm.test(item) ? colors.magenta(item) : item);
+        if (options.logging &amp;&amp; message) {
+            _.each(message.split(' '), function (item) {
+                newMessage += ' ' + (/^\d+x\d+$/gm.test(item) ? colors.magenta(item) : item);
             });
-            console.log(colors.green(&#x27;[Favicons]&#x27;) + &#x27; &#x27; + context.yellow + &#x27;:&#x27; + newMessage + &#x27;...&#x27;);
+            console.log(colors.green('[Favicons]') + ' ' + context.yellow + ':' + newMessage + '...');
         }
     }
 
@@ -597,8 +590,8 @@
 
     function updateDocument(document, code, tags, next) {
         var $ = cheerio.load(document, { decodeEntities: false }),
-            target = $(&#x27;head&#x27;).length &#x3e; 0 ? $(&#x27;head&#x27;) : $.root(),
-            newCode = cheerio.load(code.join(&#x27;\n&#x27;), { decodeEntities: false });
+            target = $('head').length &gt; 0 ? $('head') : $.root(),
+            newCode = cheerio.load(code.join('\n'), { decodeEntities: false });
 
         async.each(tags, function (platform, callback) {
             async.forEachOf(platform, function (tag, selector, cb) {
@@ -611,19 +604,19 @@
             }, callback);
         }, function (error) {
             target.append(newCode.html());
-            return next(error, $.html().replace(/^\s*$[\n\r]{1,}/gm, &#x27;&#x27;));
+            return next(error, $.html().replace(/^\s*$[\n\r]{1,}/gm, ''));
         });
     }
 
     function preparePlatformOptions(platform, options) {
-        if ((typeof options === &#x27;undefined&#x27; ? &#x27;undefined&#x27; : _typeof(options)) != &#x27;object&#x27;) {
+        if ((typeof options === 'undefined' ? 'undefined' : _typeof(options)) != 'object') {
             options = {};
         }
 
         _.each(options, function (value, key) {
             var platformOptionsRef = PLATFORM_OPTIONS[key];
 
-            if (typeof platformOptionsRef == &#x27;undefined&#x27; || platformOptionsRef.platforms.indexOf(platform) == -1) {
+            if (typeof platformOptionsRef == 'undefined' || platformOptionsRef.platforms.indexOf(platform) == -1) {
                 return Reflect.deleteProperty(options, key);
             }
         });
@@ -632,7 +625,7 @@
             var platforms = _ref.platforms;
             var defaultTo = _ref.defaultTo;
 
-            if (typeof options[key] == &#x27;undefined&#x27; &#x26;&#x26; platforms.indexOf(platform) != -1) {
+            if (typeof options[key] == 'undefined' &amp;&amp; platforms.indexOf(platform) != -1) {
                 options[key] = defaultTo;
             }
         });
@@ -645,7 +638,7 @@
         General: {
             preparePlatformOptions: preparePlatformOptions,
             background: function background(hex) {
-                print(&#x27;General:background&#x27;, &#x27;Parsing colour &#x27; + hex);
+                print('General:background', 'Parsing colour ' + hex);
                 var rgba = color(hex).toRgb();
 
                 return Jimp.rgbaToInt(rgba.r, rgba.g, rgba.b, rgba.a * HEX_MAX);
@@ -653,9 +646,9 @@
             source: function source(_source, callback) {
                 var sourceset = [];
 
-                print(&#x27;General:source&#x27;, &#x27;Source type is &#x27; + (typeof _source === &#x27;undefined&#x27; ? &#x27;undefined&#x27; : _typeof(_source)));
+                print('General:source', 'Source type is ' + (typeof _source === 'undefined' ? 'undefined' : _typeof(_source)));
                 if (!_source || !_source.length) {
-                    return callback(&#x27;No source provided&#x27;);
+                    return callback('No source provided');
                 } else if (Buffer.isBuffer(_source)) {
                     sourceset = [{ size: sizeOf(_source), file: _source }];
                     callback(null, sourceset);
@@ -673,9 +666,9 @@
                             cb(null);
                         });
                     }, function (error) {
-                        return callback(error || sourceset.length ? null : &#x27;Favicons source is invalid&#x27;, sourceset);
+                        return callback(error || sourceset.length ? null : 'Favicons source is invalid', sourceset);
                     });
-                } else if (typeof _source === &#x27;string&#x27;) {
+                } else if (typeof _source === 'string') {
                     readFile(_so ...</pre></li>
     <li>example usage<pre class="apidocCodePre">n/a</pre></li>
     </ul>
@@ -692,12 +685,12 @@
     <li>description and source-code<pre class="apidocCodePre">function stream(params, handleHtml) {
 
     const config = clone(configDefaults),
-        µ = helpers(params);
+        Âµ = helpers(params);
 
     function processDocuments (documents, html, callback) {
-        async.each(documents, (document, cb) =&#x3e;
-            µ.HTML.update(document, html, config.html, cb),
-        (error) =&#x3e;
+        async.each(documents, (document, cb) =&gt;
+            Âµ.HTML.update(document, html, config.html, cb),
+        (error) =&gt;
             callback(error));
     }
 
@@ -710,32 +703,32 @@
         }
 
         if (file.isStream()) {
-            return callback(new Error(&#x27;[gulp-favicons] Streaming not supported&#x27;));
+            return callback(new Error('[gulp-favicons] Streaming not supported'));
         }
 
         async.waterfall([
-            (cb) =&#x3e;
+            (cb) =&gt;
                 favicons(file.contents, params, cb),
-            (response, cb) =&#x3e;
-                async.each(response.images.concat(response.files), (image, c) =&#x3e; {
-                    that.push(µ.General.vinyl(image));
+            (response, cb) =&gt;
+                async.each(response.images.concat(response.files), (image, c) =&gt; {
+                    that.push(Âµ.General.vinyl(image));
                     c();
-                }, (error) =&#x3e;
+                }, (error) =&gt;
                     cb(error, response)),
-            (response, cb) =&#x3e; {
+            (response, cb) =&gt; {
                 if (handleHtml) {
                     handleHtml(response.html);
                     return cb(null);
                 }
-                if (params.html &#x26;&#x26; !params.pipeHTML) {
-                    const documents = typeof params.html === &#x27;object&#x27; ? params.html : [params.html];
+                if (params.html &amp;&amp; !params.pipeHTML) {
+                    const documents = typeof params.html === 'object' ? params.html : [params.html];
 
                     processDocuments(documents, response.html, cb);
                 } else {
                     return cb(null);
                 }
             }
-        ], (error) =&#x3e;
+        ], (error) =&gt;
             callback(error));
     });
 }</pre></li>
@@ -756,13 +749,13 @@
 }</pre></li>
     <li>example usage<pre class="apidocCodePre">...
 });
-options.background = &#x27;#&#x27; + color(options.background).toHex();
+options.background = '#' + color(options.background).toHex();
 request.master_picture.content = (svgSource || _.max(sourceset, function (_ref2) {
     var _ref2$size = _ref2.size;
     var width = _ref2$size.width;
     var height = _ref2$size.height;
     return Math.max(width, height);
-})).file.<span class="apidocCodeKeywordSpan">toString</span>(&#x27;base64&#x27;);
+})).file.<span class="apidocCodeKeywordSpan">toString</span>('base64');
 request.files_location.path = options.path;
 
 if (options.icons.android) {
@@ -793,18 +786,18 @@ if (options.icons.android) {
 
     var config = clone(configDefaults),
         options = _.mergeDefaults(parameters || {}, config.defaults),
-        µ = helpers(options),
-        background = µ.General.background(options.background);
+        Âµ = helpers(options),
+        background = Âµ.General.background(options.background);
 
     function createFavicon(sourceset, properties, name, platformOptions, callback) {
-        if (path.extname(name) === &#x27;.ico&#x27;) {
+        if (path.extname(name) === '.ico') {
             async.map(properties.sizes, function (sizeProperties, cb) {
                 var newProperties = clone(properties);
 
                 newProperties.width = sizeProperties.width;
                 newProperties.height = sizeProperties.height;
 
-                var tempName = &#x27;favicon-temp-&#x27; + newProperties.width + &#x27;x&#x27; + newProperties.height + &#x27;.png&#x27;;
+                var tempName = 'favicon-temp-' + newProperties.width + 'x' + newProperties.height + '.png';
 
                 createFavicon(sourceset, newProperties, tempName, platformOptions, cb);
             }, function (error, results) {
@@ -826,19 +819,19 @@ if (options.icons.android) {
                     offset = Math.round(maximum / 100 * platformOptions.offset) || 0;
 
                 async.waterfall([function (cb) {
-                    return µ.Images.nearest(sourceset, properties, offset, cb);
+                    return Âµ.Images.nearest(sourceset, properties, offset, cb);
                 }, function (nearest, cb) {
-                    return µ.Images.read(nearest.file, cb);
+                    return Âµ.Images.read(nearest.file, cb);
                 }, function (buffer, cb) {
-                    return µ.Images.resize(buffer, properties, offset, cb);
+                    return Âµ.Images.resize(buffer, properties, offset, cb);
                 }, function (resizedBuffer, cb) {
-                    return µ.Images.create(properties, background, function (error, canvas) {
+                    return Âµ.Images.create(properties, background, function (error, canvas) {
                         return cb(error, resizedBuffer, canvas);
                     });
                 }, function (resizedBuffer, canvas, cb) {
-                    return µ.Images.composite(canvas, resizedBuffer, properties, offset, maximum, cb);
+                    return Âµ.Images.composite(canvas, resizedBuffer, properties, offset, maximum, cb);
                 }, function (composite, cb) {
-                    µ.Images.getBuffer(composite, cb);
+                    Âµ.Images.getBuffer(composite, cb);
                 }], function (error, buffer) {
                     return callback(error, { name: name, contents: buffer });
                 });
@@ -850,8 +843,8 @@ if (options.icons.android) {
         var html = [];
 
         async.forEachOf(config.html[platform], function (tag, selector, cb) {
-            return µ.HTML.parse(tag, function (error, metadata) {
-                return cb(html.push(metadata) &#x26;&#x26; error);
+            return Âµ.HTML.parse(tag, function (error, metadata) {
+                return cb(html.push(metadata) &amp;&amp; error);
             });
         }, function (error) {
             return callback(error, html);
@@ -862,8 +855,8 @@ if (options.icons.android) {
         var files = [];
 
         async.forEachOf(config.files[platform], function (properties, name, cb) {
-            return µ.Files.create(properties, name, function (error, file) {
-                return cb(files.push(file) &#x26;&#x26; error);
+            return Âµ.Files.create(properties, name, function (error, file) {
+                return cb(files.push(file) &amp;&amp; error);
             });
         }, function (error) {
             return callback(error, files);
@@ -875,7 +868,7 @@ if (options.icons.android) {
 
         async.forEachOf(config.icons[platform], function (properties, name, cb) {
             return createFavicon(sourceset, properties, name, platformOptions, function (error, image) {
-                return cb(images.push(image) &#x26;&#x26; error);
+                return cb(images.push(image) &amp;&amp; error);
             });
         }, function (error) {
             return callback(error, images);
@@ -905,11 +898,11 @@ if (options.icons.android) {
     <li>description and source-code<pre class="apidocCodePre">function stream(params, handleHtml) {
 
     var config = clone(configDefaults),
-        µ = helpers(params);
+        Âµ = helpers(params);
 
     function processDocuments(documents, html, callback) {
         async.each(documents, function (document, cb) {
-            return µ.HTML.update(document, html, config.html, cb);
+            return Âµ.HTML.update(document, html, config.html, cb);
         }, function (error) {
             return callback(error);
         });
@@ -924,14 +917,14 @@ if (options.icons.android) {
         }
 
         if (file.isStream()) {
-            return callback(new Error(&#x27;[gulp-favicons] Streaming not supported&#x27;));
+            return callback(new Error('[gulp-favicons] Streaming not supported'));
         }
 
         async.waterfall([function (cb) {
             return favicons(file.contents, params, cb);
         }, function (response, cb) {
             return async.each(response.images.concat(response.files), function (image, c) {
-                that.push(µ.General.vinyl(image));
+                that.push(Âµ.General.vinyl(image));
                 c();
             }, function (error) {
                 return cb(error, response);
@@ -941,8 +934,8 @@ if (options.icons.android) {
                 handleHtml(response.html);
                 return cb(null);
             }
-            if (params.html &#x26;&#x26; !params.pipeHTML) {
-                var documents = _typeof(params.html) === &#x27;object&#x27; ? params.html : [params.html];
+            if (params.html &amp;&amp; !params.pipeHTML) {
+                var documents = _typeof(params.html) === 'object' ? params.html : [params.html];
 
                 processDocuments(documents, response.html, cb);
             } else {
@@ -975,21 +968,21 @@ if (options.icons.android) {
     <li>description and source-code<pre class="apidocCodePre">function helpers(options) {
 
     function contains (array, element) {
-        return array.indexOf(element.toLowerCase()) &#x3e; NON_EXISTANT;
+        return array.indexOf(element.toLowerCase()) &gt; NON_EXISTANT;
     }
 
     function relative (directory) {
-        return path.join(options.path, directory).replace(/\\/g, &#x27;/&#x27;);
+        return path.join(options.path, directory).replace(/\\/g, '/');
     }
 
     function print (context, message) {
-        let newMessage = &#x27;&#x27;;
+        let newMessage = '';
 
-        if (options.logging &#x26;&#x26; message) {
-            _.each(message.split(&#x27; &#x27;), (item) =&#x3e; {
+        if (options.logging &amp;&amp; message) {
+            _.each(message.split(' '), (item) =&gt; {
                 newMessage += ` ${ ((/^\d+x\d+$/gm).test(item) ? colors.magenta(item) : item) }`;
             });
-            console.log(`${ colors.green(&#x27;[Favicons]&#x27;) } ${ context.yellow }:${ newMessage }...`);
+            console.log(`${ colors.green('[Favicons]') } ${ context.yellow }:${ newMessage }...`);
         }
     }
 
@@ -999,11 +992,11 @@ if (options.icons.android) {
 
     function updateDocument (document, code, tags, next) {
         const $ = cheerio.load(document, { decodeEntities: false }),
-            target = $(&#x27;head&#x27;).length &#x3e; 0 ? $(&#x27;head&#x27;) : $.root(),
-            newCode = cheerio.load(code.join(&#x27;\n&#x27;), { decodeEntities: false });
+            target = $('head').length &gt; 0 ? $('head') : $.root(),
+            newCode = cheerio.load(code.join('\n'), { decodeEntities: false });
 
-        async.each(tags, (platform, callback) =&#x3e; {
-            async.forEachOf(platform, (tag, selector, cb) =&#x3e; {
+        async.each(tags, (platform, callback) =&gt; {
+            async.forEachOf(platform, (tag, selector, cb) =&gt; {
                 if (options.replace) {
                     $(selector).remove();
                 } else if ($(selector).length) {
@@ -1011,27 +1004,27 @@ if (options.icons.android) {
                 }
                 return cb(null);
             }, callback);
-        }, (error) =&#x3e; {
+        }, (error) =&gt; {
             target.append(newCode.html());
-            return next(error, $.html().replace(/^\s*$[\n\r]{1,}/gm, &#x27;&#x27;));
+            return next(error, $.html().replace(/^\s*$[\n\r]{1,}/gm, ''));
         });
     }
 
     function preparePlatformOptions(platform, options) {
-        if (typeof options != &#x27;object&#x27;) {
+        if (typeof options != 'object') {
             options = {};
         }
 
-        _.each(options, (value, key) =&#x3e; {
+        _.each(options, (value, key) =&gt; {
             let platformOptionsRef = PLATFORM_OPTIONS[key];
 
-            if (typeof platformOptionsRef == &#x27;undefined&#x27; || platformOptionsRef.platforms.indexOf(platform) == -1) {
+            if (typeof platformOptionsRef == 'undefined' || platformOptionsRef.platforms.indexOf(platform) == -1) {
                 return Reflect.deleteProperty(options, key);
             }
         });
 
-        _.each(PLATFORM_OPTIONS, ({ platforms, defaultTo }, key) =&#x3e; {
-            if (typeof options[key] == &#x27;undefined&#x27; &#x26;&#x26; platforms.indexOf(platform) != -1) {
+        _.each(PLATFORM_OPTIONS, ({ platforms, defaultTo }, key) =&gt; {
+            if (typeof options[key] == 'undefined' &amp;&amp; platforms.indexOf(platform) != -1) {
                 options[key] = defaultTo;
             }
         });
@@ -1043,24 +1036,24 @@ if (options.icons.android) {
 
         General: {
             preparePlatformOptions: preparePlatformOptions,
-            background: (hex) =&#x3e; {
-                print(&#x27;General:background&#x27;, `Parsing colour ${ hex }`);
+            background: (hex) =&gt; {
+                print('General:background', `Parsing colour ${ hex }`);
                 const rgba = color(hex).toRgb();
 
                 return Jimp.rgbaToInt(rgba.r, rgba.g, rgba.b, rgba.a * HEX_MAX);
             },
-            source: (source, callback) =&#x3e; {
+            source: (source, callback) =&gt; {
                 let sourceset = [];
 
-                print(&#x27;General:source&#x27;, `Source type is ${ typeof source }`);
+                print('General:source', `Source type is ${ typeof source }`);
                 if (!source || !source.length) {
-                    return callback(&#x27;No source provided&#x27;);
+                    return callback('No source provided');
                 } else if (Buffer.isBuffer(source)) {
                     sourceset = [{ size: sizeOf(source), file: source }];
                     callback(null, sourceset);
                 } else if (Array.isArray(source)) {
-                    async.each(source, (file, cb) =&#x3e;
-                        readFile(file, (error, buffer) =&#x3e; {
+                    async.each(source, (file, cb) =&gt;
+                        readFile(file, (error, buffer) =&gt; {
                             if (error) {
                                 return cb(error);
                             }
@@ -1071,11 +1064,11 @@ if (options.icons.android) {
                             });
                             cb(null);
                         }),
-                        (error) =&#x3e;
-                            callback(error || sourceset.length ? null : &#x27;Favicons source is invalid&#x27;, sourceset)
+                        (error) =&gt;
+                            callback(error || sourceset.length ? null : 'Favicons source is invalid', sourceset)
                     );
-                } else if (typeof source === &#x27;string&#x27;) {
-                    readFile(source, (error, buffer) =&#x3e; {
+                } else if (typeof source === 'string') {
+                    readFile(source, (error, buffer) =&gt; {
                         if (error) {
                             return callback(error);
                         }
@@ -1102,21 +1095,21 @@ if (options.icons.android) {
     <li>description and source-code<pre class="apidocCodePre">function helpers(options) {
 
     function contains(array, element) {
-        return array.indexOf(element.toLowerCase()) &#x3e; NON_EXISTANT;
+        return array.indexOf(element.toLowerCase()) &gt; NON_EXISTANT;
     }
 
     function relative(directory) {
-        return path.join(options.path, directory).replace(/\\/g, &#x27;/&#x27;);
+        return path.join(options.path, directory).replace(/\\/g, '/');
     }
 
     function print(context, message) {
-        var newMessage = &#x27;&#x27;;
+        var newMessage = '';
 
-        if (options.logging &#x26;&#x26; message) {
-            _.each(message.split(&#x27; &#x27;), function (item) {
-                newMessage += &#x27; &#x27; + (/^\d+x\d+$/gm.test(item) ? colors.magenta(item) : item);
+        if (options.logging &amp;&amp; message) {
+            _.each(message.split(' '), function (item) {
+                newMessage += ' ' + (/^\d+x\d+$/gm.test(item) ? colors.magenta(item) : item);
             });
-            console.log(colors.green(&#x27;[Favicons]&#x27;) + &#x27; &#x27; + context.yellow + &#x27;:&#x27; + newMessage + &#x27;...&#x27;);
+            console.log(colors.green('[Favicons]') + ' ' + context.yellow + ':' + newMessage + '...');
         }
     }
 
@@ -1126,8 +1119,8 @@ if (options.icons.android) {
 
     function updateDocument(document, code, tags, next) {
         var $ = cheerio.load(document, { decodeEntities: false }),
-            target = $(&#x27;head&#x27;).length &#x3e; 0 ? $(&#x27;head&#x27;) : $.root(),
-            newCode = cheerio.load(code.join(&#x27;\n&#x27;), { decodeEntities: false });
+            target = $('head').length &gt; 0 ? $('head') : $.root(),
+            newCode = cheerio.load(code.join('\n'), { decodeEntities: false });
 
         async.each(tags, function (platform, callback) {
             async.forEachOf(platform, function (tag, selector, cb) {
@@ -1140,19 +1133,19 @@ if (options.icons.android) {
             }, callback);
         }, function (error) {
             target.append(newCode.html());
-            return next(error, $.html().replace(/^\s*$[\n\r]{1,}/gm, &#x27;&#x27;));
+            return next(error, $.html().replace(/^\s*$[\n\r]{1,}/gm, ''));
         });
     }
 
     function preparePlatformOptions(platform, options) {
-        if ((typeof options === &#x27;undefined&#x27; ? &#x27;undefined&#x27; : _typeof(options)) != &#x27;object&#x27;) {
+        if ((typeof options === 'undefined' ? 'undefined' : _typeof(options)) != 'object') {
             options = {};
         }
 
         _.each(options, function (value, key) {
             var platformOptionsRef = PLATFORM_OPTIONS[key];
 
-            if (typeof platformOptionsRef == &#x27;undefined&#x27; || platformOptionsRef.platforms.indexOf(platform) == -1) {
+            if (typeof platformOptionsRef == 'undefined' || platformOptionsRef.platforms.indexOf(platform) == -1) {
                 return Reflect.deleteProperty(options, key);
             }
         });
@@ -1161,7 +1154,7 @@ if (options.icons.android) {
             var platforms = _ref.platforms;
             var defaultTo = _ref.defaultTo;
 
-            if (typeof options[key] == &#x27;undefined&#x27; &#x26;&#x26; platforms.indexOf(platform) != -1) {
+            if (typeof options[key] == 'undefined' &amp;&amp; platforms.indexOf(platform) != -1) {
                 options[key] = defaultTo;
             }
         });
@@ -1174,7 +1167,7 @@ if (options.icons.android) {
         General: {
             preparePlatformOptions: preparePlatformOptions,
             background: function background(hex) {
-                print(&#x27;General:background&#x27;, &#x27;Parsing colour &#x27; + hex);
+                print('General:background', 'Parsing colour ' + hex);
                 var rgba = color(hex).toRgb();
 
                 return Jimp.rgbaToInt(rgba.r, rgba.g, rgba.b, rgba.a * HEX_MAX);
@@ -1182,9 +1175,9 @@ if (options.icons.android) {
             source: function source(_source, callback) {
                 var sourceset = [];
 
-                print(&#x27;General:source&#x27;, &#x27;Source type is &#x27; + (typeof _source === &#x27;undefined&#x27; ? &#x27;undefined&#x27; : _typeof(_source)));
+                print('General:source', 'Source type is ' + (typeof _source === 'undefined' ? 'undefined' : _typeof(_source)));
                 if (!_source || !_source.length) {
-                    return callback(&#x27;No source provided&#x27;);
+                    return callback('No source provided');
                 } else if (Buffer.isBuffer(_source)) {
                     sourceset = [{ size: sizeOf(_source), file: _source }];
                     callback(null, sourceset);
@@ -1202,9 +1195,9 @@ if (options.icons.android) {
                             cb(null);
                         });
                     }, function (error) {
-                        return callback(error || sourceset.length ? null : &#x27;Favicons source is invalid&#x27;, sourceset);
+                        return callback(error || sourceset.length ? null : 'Favicons source is invalid', sourceset);
                     });
-                } else if (typeof _source === &#x27;string&#x27;) {
+                } else if (typeof _source === 'string') {
                     readFile(_so ...</pre></li>
     <li>example usage<pre class="apidocCodePre">n/a</pre></li>
     </ul>
@@ -1226,12 +1219,12 @@ if (options.icons.android) {
     <li>description and source-code<pre class="apidocCodePre">function stream(params, handleHtml) {
 
     const config = clone(configDefaults),
-        µ = helpers(params);
+        Âµ = helpers(params);
 
     function processDocuments (documents, html, callback) {
-        async.each(documents, (document, cb) =&#x3e;
-            µ.HTML.update(document, html, config.html, cb),
-        (error) =&#x3e;
+        async.each(documents, (document, cb) =&gt;
+            Âµ.HTML.update(document, html, config.html, cb),
+        (error) =&gt;
             callback(error));
     }
 
@@ -1244,32 +1237,32 @@ if (options.icons.android) {
         }
 
         if (file.isStream()) {
-            return callback(new Error(&#x27;[gulp-favicons] Streaming not supported&#x27;));
+            return callback(new Error('[gulp-favicons] Streaming not supported'));
         }
 
         async.waterfall([
-            (cb) =&#x3e;
+            (cb) =&gt;
                 favicons(file.contents, params, cb),
-            (response, cb) =&#x3e;
-                async.each(response.images.concat(response.files), (image, c) =&#x3e; {
-                    that.push(µ.General.vinyl(image));
+            (response, cb) =&gt;
+                async.each(response.images.concat(response.files), (image, c) =&gt; {
+                    that.push(Âµ.General.vinyl(image));
                     c();
-                }, (error) =&#x3e;
+                }, (error) =&gt;
                     cb(error, response)),
-            (response, cb) =&#x3e; {
+            (response, cb) =&gt; {
                 if (handleHtml) {
                     handleHtml(response.html);
                     return cb(null);
                 }
-                if (params.html &#x26;&#x26; !params.pipeHTML) {
-                    const documents = typeof params.html === &#x27;object&#x27; ? params.html : [params.html];
+                if (params.html &amp;&amp; !params.pipeHTML) {
+                    const documents = typeof params.html === 'object' ? params.html : [params.html];
 
                     processDocuments(documents, response.html, cb);
                 } else {
                     return cb(null);
                 }
             }
-        ], (error) =&#x3e;
+        ], (error) =&gt;
             callback(error));
     });
 }</pre></li>
@@ -1300,13 +1293,13 @@ if (options.icons.android) {
 }</pre></li>
     <li>example usage<pre class="apidocCodePre">...
 });
-options.background = &#x27;#&#x27; + color(options.background).toHex();
+options.background = '#' + color(options.background).toHex();
 request.master_picture.content = (svgSource || _.max(sourceset, function (_ref2) {
     var _ref2$size = _ref2.size;
     var width = _ref2$size.width;
     var height = _ref2$size.height;
     return Math.max(width, height);
-})).file.<span class="apidocCodeKeywordSpan">toString</span>(&#x27;base64&#x27;);
+})).file.<span class="apidocCodeKeywordSpan">toString</span>('base64');
 request.files_location.path = options.path;
 
 if (options.icons.android) {
@@ -1326,3 +1319,4 @@ if (options.icons.android) {
     ]
 </div>
 </div>
+</body></html>

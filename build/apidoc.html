@@ -63,6 +63,15 @@
 
         <li>
 
+            <a class="apidocElementLiA" href="#apidoc.element.favicons.favicons">
+            function <span class="apidocSignatureSpan"></span>favicons
+            <span class="apidocSignatureSpan">(source, parameters, next)</span>
+            </a>
+
+        </li>
+
+        <li>
+
             <a class="apidocElementLiA" href="#apidoc.element.favicons.es5">
             function <span class="apidocSignatureSpan">favicons.</span>es5
             <span class="apidocSignatureSpan">(source, parameters, next)</span>
@@ -72,9 +81,36 @@
 
         <li>
 
+            <a class="apidocElementLiA" href="#apidoc.element.favicons.helpers">
+            function <span class="apidocSignatureSpan">favicons.</span>helpers
+            <span class="apidocSignatureSpan">(options)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.favicons.helpers_es5">
+            function <span class="apidocSignatureSpan">favicons.</span>helpers_es5
+            <span class="apidocSignatureSpan">(options)</span>
+            </a>
+
+        </li>
+
+        <li>
+
             <a class="apidocElementLiA" href="#apidoc.element.favicons.stream">
             function <span class="apidocSignatureSpan">favicons.</span>stream
             <span class="apidocSignatureSpan">(params, handleHtml)</span>
+            </a>
+
+        </li>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.favicons.toString">
+            function <span class="apidocSignatureSpan">favicons.</span>toString
+            <span class="apidocSignatureSpan">()</span>
             </a>
 
         </li>
@@ -115,10 +151,181 @@
 
     </ol></li>
 
+    <li class="apidocModuleLi"><a href="#apidoc.module.favicons.helpers">module favicons.helpers</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.favicons.helpers.helpers">
+            function <span class="apidocSignatureSpan">favicons.</span>helpers
+            <span class="apidocSignatureSpan">(options)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.favicons.helpers_es5">module favicons.helpers_es5</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.favicons.helpers_es5.helpers_es5">
+            function <span class="apidocSignatureSpan">favicons.</span>helpers_es5
+            <span class="apidocSignatureSpan">(options)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.favicons.stream">module favicons.stream</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.favicons.stream.stream">
+            function <span class="apidocSignatureSpan">favicons.</span>stream
+            <span class="apidocSignatureSpan">(params, handleHtml)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.favicons.toString">module favicons.toString</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.favicons.toString.toString">
+            function <span class="apidocSignatureSpan">favicons.</span>toString
+            <span class="apidocSignatureSpan">()</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
 </ol></div>
 
 <div class="apidocSectionDiv">
 <h1><a href="#apidoc.module.favicons" id="apidoc.module.favicons">module favicons</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.favicons.favicons" id="apidoc.element.favicons.favicons">
+        function <span class="apidocSignatureSpan"></span>favicons
+        <span class="apidocSignatureSpan">(source, parameters, next)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function favicons(source, parameters, next) {
+
+    const config = clone(configDefaults),
+        options = _.mergeDefaults(parameters || {}, config.defaults),
+        µ = helpers(options),
+        background = µ.General.background(options.background);
+
+    function createFavicon (sourceset, properties, name, platformOptions, callback) {
+        if (path.extname(name) === &#x27;.ico&#x27;) {
+            async.map(
+                properties.sizes,
+                (sizeProperties, cb) =&#x3e; {
+                    const newProperties = clone(properties);
+
+                    newProperties.width = sizeProperties.width;
+                    newProperties.height = sizeProperties.height;
+
+                    const tempName = `favicon-temp-${newProperties.width}x${newProperties.height}.png`;
+
+                    createFavicon(sourceset, newProperties, tempName, platformOptions, cb);
+                },
+                (error, results) =&#x3e; {
+                    if (error) {
+                        return callback(error);
+                    }
+
+                    const files = results.map((icoImage) =&#x3e; icoImage.contents);
+
+                    toIco(files)
+                        .then((buffer) =&#x3e; callback(null, { name, contents: buffer }))
+                        .catch(callback);
+                }
+            );
+        } else {
+            const maximum = Math.max(properties.width, properties.height),
+                offset = Math.round(maximum / 100 * platformOptions.offset) || 0;
+
+            async.waterfall([
+                (cb) =&#x3e;
+                    µ.Images.nearest(sourceset, properties, offset, cb),
+                (nearest, cb) =&#x3e;
+                    µ.Images.read(nearest.file, cb),
+                (buffer, cb) =&#x3e;
+                    µ.Images.resize(buffer, properties, offset, cb),
+                (resizedBuffer, cb) =&#x3e;
+                    µ.Images.create(properties, background, (error, canvas) =&#x3e;
+                        cb(error, resizedBuffer, canvas)),
+                (resizedBuffer, canvas, cb) =&#x3e;
+                    µ.Images.composite(canvas, resizedBuffer, properties, offset, maximum, cb),
+                (composite, cb) =&#x3e; {
+                    µ.Images.getBuffer(composite, cb);
+                }
+            ], (error, buffer) =&#x3e;
+                callback(error, { name, contents: buffer }));
+        }
+
+    }
+
+    function createHTML (platform, callback) {
+        const html = [];
+
+        async.forEachOf(config.html[platform], (tag, selector, cb) =&#x3e;
+            µ.HTML.parse(tag, (error, metadata) =&#x3e;
+                cb(html.push(metadata) &#x26;&#x26; error)),
+        (error) =&#x3e;
+            callback(error, html));
+    }
+
+    function createFiles (platform, callback) {
+        const files = [];
+
+        async.forEachOf(config.files[platform], (properties, name, cb) =&#x3e;
+            µ.Files.create(properties, name, (error, file) =&#x3e;
+                cb(files.push(file) &#x26;&#x26; error)),
+        (error) =&#x3e;
+            callback(error, files));
+    }
+
+    function createFavicons (sourceset, platform, platformOptions, callback) {
+        const images = [];
+
+        async.forEachOf(config.icons[platform], (properties, name, cb) =&#x3e;
+            createFavicon(sourceset, properties, name, platformOptions, (error, image) =&#x3e;
+                cb(images.push(image) &#x26;&#x26; error)),
+        (error) =&#x3e;
+            callback(error, images));
+    }
+
+    function createPlatform (sourceset, platform, platformOptions, callback) {
+        async.parallel([
+            (cb) =&#x3e;
+                createFavicons(sourceset, platform, platformOptions, cb),
+            (cb) =&#x3e;
+                createFiles(platform, cb),
+            (cb) =&#x3e;
+                createHTML(platform, cb)
+        ], (error, results) =&#x3e;
+            callback(error, results[0], results[1], results[2]));
+    }
+
+    function createOffline (sourceset, callback) {
+        const response = { images: [], files: [], html: [] };
+
+        async.forEachOf(options.icons, (enabled, platform, cb) =&#x3e; {
+            const platformOptions = µ.General.preparePlatformOptions(platform, enabled);
+
+            if (enabled) { ...</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
 
 
     <h2>
@@ -235,6 +442,247 @@
 
 
     <h2>
+        <a href="#apidoc.element.favicons.helpers" id="apidoc.element.favicons.helpers">
+        function <span class="apidocSignatureSpan">favicons.</span>helpers
+        <span class="apidocSignatureSpan">(options)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function helpers(options) {
+
+    function contains (array, element) {
+        return array.indexOf(element.toLowerCase()) &#x3e; NON_EXISTANT;
+    }
+
+    function relative (directory) {
+        return path.join(options.path, directory).replace(/\\/g, &#x27;/&#x27;);
+    }
+
+    function print (context, message) {
+        let newMessage = &#x27;&#x27;;
+
+        if (options.logging &#x26;&#x26; message) {
+            _.each(message.split(&#x27; &#x27;), (item) =&#x3e; {
+                newMessage += ` ${ ((/^\d+x\d+$/gm).test(item) ? colors.magenta(item) : item) }`;
+            });
+            console.log(`${ colors.green(&#x27;[Favicons]&#x27;) } ${ context.yellow }:${ newMessage }...`);
+        }
+    }
+
+    function readFile (filepath, callback) {
+        fs.readFile(filepath, callback);
+    }
+
+    function updateDocument (document, code, tags, next) {
+        const $ = cheerio.load(document, { decodeEntities: false }),
+            target = $(&#x27;head&#x27;).length &#x3e; 0 ? $(&#x27;head&#x27;) : $.root(),
+            newCode = cheerio.load(code.join(&#x27;\n&#x27;), { decodeEntities: false });
+
+        async.each(tags, (platform, callback) =&#x3e; {
+            async.forEachOf(platform, (tag, selector, cb) =&#x3e; {
+                if (options.replace) {
+                    $(selector).remove();
+                } else if ($(selector).length) {
+                    newCode(selector).remove();
+                }
+                return cb(null);
+            }, callback);
+        }, (error) =&#x3e; {
+            target.append(newCode.html());
+            return next(error, $.html().replace(/^\s*$[\n\r]{1,}/gm, &#x27;&#x27;));
+        });
+    }
+
+    function preparePlatformOptions(platform, options) {
+        if (typeof options != &#x27;object&#x27;) {
+            options = {};
+        }
+
+        _.each(options, (value, key) =&#x3e; {
+            let platformOptionsRef = PLATFORM_OPTIONS[key];
+
+            if (typeof platformOptionsRef == &#x27;undefined&#x27; || platformOptionsRef.platforms.indexOf(platform) == -1) {
+                return Reflect.deleteProperty(options, key);
+            }
+        });
+
+        _.each(PLATFORM_OPTIONS, ({ platforms, defaultTo }, key) =&#x3e; {
+            if (typeof options[key] == &#x27;undefined&#x27; &#x26;&#x26; platforms.indexOf(platform) != -1) {
+                options[key] = defaultTo;
+            }
+        });
+
+        return options;
+    }
+
+    return {
+
+        General: {
+            preparePlatformOptions: preparePlatformOptions,
+            background: (hex) =&#x3e; {
+                print(&#x27;General:background&#x27;, `Parsing colour ${ hex }`);
+                const rgba = color(hex).toRgb();
+
+                return Jimp.rgbaToInt(rgba.r, rgba.g, rgba.b, rgba.a * HEX_MAX);
+            },
+            source: (source, callback) =&#x3e; {
+                let sourceset = [];
+
+                print(&#x27;General:source&#x27;, `Source type is ${ typeof source }`);
+                if (!source || !source.length) {
+                    return callback(&#x27;No source provided&#x27;);
+                } else if (Buffer.isBuffer(source)) {
+                    sourceset = [{ size: sizeOf(source), file: source }];
+                    callback(null, sourceset);
+                } else if (Array.isArray(source)) {
+                    async.each(source, (file, cb) =&#x3e;
+                        readFile(file, (error, buffer) =&#x3e; {
+                            if (error) {
+                                return cb(error);
+                            }
+
+                            sourceset.push({
+                                size: sizeOf(buffer),
+                                file: buffer
+                            });
+                            cb(null);
+                        }),
+                        (error) =&#x3e;
+                            callback(error || sourceset.length ? null : &#x27;Favicons source is invalid&#x27;, sourceset)
+                    );
+                } else if (typeof source === &#x27;string&#x27;) {
+                    readFile(source, (error, buffer) =&#x3e; {
+                        if (error) {
+                            return callback(error);
+                        }
+
+                        sourceset = [{ size: sizeOf(buffer), file: buffer }];
+                        callback(null, source ...</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.favicons.helpers_es5" id="apidoc.element.favicons.helpers_es5">
+        function <span class="apidocSignatureSpan">favicons.</span>helpers_es5
+        <span class="apidocSignatureSpan">(options)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function helpers(options) {
+
+    function contains(array, element) {
+        return array.indexOf(element.toLowerCase()) &#x3e; NON_EXISTANT;
+    }
+
+    function relative(directory) {
+        return path.join(options.path, directory).replace(/\\/g, &#x27;/&#x27;);
+    }
+
+    function print(context, message) {
+        var newMessage = &#x27;&#x27;;
+
+        if (options.logging &#x26;&#x26; message) {
+            _.each(message.split(&#x27; &#x27;), function (item) {
+                newMessage += &#x27; &#x27; + (/^\d+x\d+$/gm.test(item) ? colors.magenta(item) : item);
+            });
+            console.log(colors.green(&#x27;[Favicons]&#x27;) + &#x27; &#x27; + context.yellow + &#x27;:&#x27; + newMessage + &#x27;...&#x27;);
+        }
+    }
+
+    function readFile(filepath, callback) {
+        fs.readFile(filepath, callback);
+    }
+
+    function updateDocument(document, code, tags, next) {
+        var $ = cheerio.load(document, { decodeEntities: false }),
+            target = $(&#x27;head&#x27;).length &#x3e; 0 ? $(&#x27;head&#x27;) : $.root(),
+            newCode = cheerio.load(code.join(&#x27;\n&#x27;), { decodeEntities: false });
+
+        async.each(tags, function (platform, callback) {
+            async.forEachOf(platform, function (tag, selector, cb) {
+                if (options.replace) {
+                    $(selector).remove();
+                } else if ($(selector).length) {
+                    newCode(selector).remove();
+                }
+                return cb(null);
+            }, callback);
+        }, function (error) {
+            target.append(newCode.html());
+            return next(error, $.html().replace(/^\s*$[\n\r]{1,}/gm, &#x27;&#x27;));
+        });
+    }
+
+    function preparePlatformOptions(platform, options) {
+        if ((typeof options === &#x27;undefined&#x27; ? &#x27;undefined&#x27; : _typeof(options)) != &#x27;object&#x27;) {
+            options = {};
+        }
+
+        _.each(options, function (value, key) {
+            var platformOptionsRef = PLATFORM_OPTIONS[key];
+
+            if (typeof platformOptionsRef == &#x27;undefined&#x27; || platformOptionsRef.platforms.indexOf(platform) == -1) {
+                return Reflect.deleteProperty(options, key);
+            }
+        });
+
+        _.each(PLATFORM_OPTIONS, function (_ref, key) {
+            var platforms = _ref.platforms;
+            var defaultTo = _ref.defaultTo;
+
+            if (typeof options[key] == &#x27;undefined&#x27; &#x26;&#x26; platforms.indexOf(platform) != -1) {
+                options[key] = defaultTo;
+            }
+        });
+
+        return options;
+    }
+
+    return {
+
+        General: {
+            preparePlatformOptions: preparePlatformOptions,
+            background: function background(hex) {
+                print(&#x27;General:background&#x27;, &#x27;Parsing colour &#x27; + hex);
+                var rgba = color(hex).toRgb();
+
+                return Jimp.rgbaToInt(rgba.r, rgba.g, rgba.b, rgba.a * HEX_MAX);
+            },
+            source: function source(_source, callback) {
+                var sourceset = [];
+
+                print(&#x27;General:source&#x27;, &#x27;Source type is &#x27; + (typeof _source === &#x27;undefined&#x27; ? &#x27;undefined&#x27; : _typeof(_source)));
+                if (!_source || !_source.length) {
+                    return callback(&#x27;No source provided&#x27;);
+                } else if (Buffer.isBuffer(_source)) {
+                    sourceset = [{ size: sizeOf(_source), file: _source }];
+                    callback(null, sourceset);
+                } else if (Array.isArray(_source)) {
+                    async.each(_source, function (file, cb) {
+                        return readFile(file, function (error, buffer) {
+                            if (error) {
+                                return cb(error);
+                            }
+
+                            sourceset.push({
+                                size: sizeOf(buffer),
+                                file: buffer
+                            });
+                            cb(null);
+                        });
+                    }, function (error) {
+                        return callback(error || sourceset.length ? null : &#x27;Favicons source is invalid&#x27;, sourceset);
+                    });
+                } else if (typeof _source === &#x27;string&#x27;) {
+                    readFile(_so ...</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
         <a href="#apidoc.element.favicons.stream" id="apidoc.element.favicons.stream">
         function <span class="apidocSignatureSpan">favicons.</span>stream
         <span class="apidocSignatureSpan">(params, handleHtml)</span>
@@ -292,6 +740,37 @@
     });
 }</pre></li>
     <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+
+    <h2>
+        <a href="#apidoc.element.favicons.toString" id="apidoc.element.favicons.toString">
+        function <span class="apidocSignatureSpan">favicons.</span>toString
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">toString = function () {
+    return text;
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+});
+options.background = &#x27;#&#x27; + color(options.background).toHex();
+request.master_picture.content = (svgSource || _.max(sourceset, function (_ref2) {
+    var _ref2$size = _ref2.size;
+    var width = _ref2$size.width;
+    var height = _ref2$size.height;
+    return Math.max(width, height);
+})).file.<span class="apidocCodeKeywordSpan">toString</span>(&#x27;base64&#x27;);
+request.files_location.path = options.path;
+
+if (options.icons.android) {
+    request.favicon_design.android_chrome.theme_color = options.background;
+    request.favicon_design.android_chrome.manifest.name = options.appName;
+    request.favicon_design.android_chrome.manifest.display = options.display;
+    request.favicon_design.android_chrome.manifest.orientation = options.orientation;
+...</pre></li>
     </ul>
 
 
@@ -478,6 +957,365 @@
     </ul>
 
 
+
+
+</div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.favicons.helpers" id="apidoc.module.favicons.helpers">module favicons.helpers</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.favicons.helpers.helpers" id="apidoc.element.favicons.helpers.helpers">
+        function <span class="apidocSignatureSpan">favicons.</span>helpers
+        <span class="apidocSignatureSpan">(options)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function helpers(options) {
+
+    function contains (array, element) {
+        return array.indexOf(element.toLowerCase()) &#x3e; NON_EXISTANT;
+    }
+
+    function relative (directory) {
+        return path.join(options.path, directory).replace(/\\/g, &#x27;/&#x27;);
+    }
+
+    function print (context, message) {
+        let newMessage = &#x27;&#x27;;
+
+        if (options.logging &#x26;&#x26; message) {
+            _.each(message.split(&#x27; &#x27;), (item) =&#x3e; {
+                newMessage += ` ${ ((/^\d+x\d+$/gm).test(item) ? colors.magenta(item) : item) }`;
+            });
+            console.log(`${ colors.green(&#x27;[Favicons]&#x27;) } ${ context.yellow }:${ newMessage }...`);
+        }
+    }
+
+    function readFile (filepath, callback) {
+        fs.readFile(filepath, callback);
+    }
+
+    function updateDocument (document, code, tags, next) {
+        const $ = cheerio.load(document, { decodeEntities: false }),
+            target = $(&#x27;head&#x27;).length &#x3e; 0 ? $(&#x27;head&#x27;) : $.root(),
+            newCode = cheerio.load(code.join(&#x27;\n&#x27;), { decodeEntities: false });
+
+        async.each(tags, (platform, callback) =&#x3e; {
+            async.forEachOf(platform, (tag, selector, cb) =&#x3e; {
+                if (options.replace) {
+                    $(selector).remove();
+                } else if ($(selector).length) {
+                    newCode(selector).remove();
+                }
+                return cb(null);
+            }, callback);
+        }, (error) =&#x3e; {
+            target.append(newCode.html());
+            return next(error, $.html().replace(/^\s*$[\n\r]{1,}/gm, &#x27;&#x27;));
+        });
+    }
+
+    function preparePlatformOptions(platform, options) {
+        if (typeof options != &#x27;object&#x27;) {
+            options = {};
+        }
+
+        _.each(options, (value, key) =&#x3e; {
+            let platformOptionsRef = PLATFORM_OPTIONS[key];
+
+            if (typeof platformOptionsRef == &#x27;undefined&#x27; || platformOptionsRef.platforms.indexOf(platform) == -1) {
+                return Reflect.deleteProperty(options, key);
+            }
+        });
+
+        _.each(PLATFORM_OPTIONS, ({ platforms, defaultTo }, key) =&#x3e; {
+            if (typeof options[key] == &#x27;undefined&#x27; &#x26;&#x26; platforms.indexOf(platform) != -1) {
+                options[key] = defaultTo;
+            }
+        });
+
+        return options;
+    }
+
+    return {
+
+        General: {
+            preparePlatformOptions: preparePlatformOptions,
+            background: (hex) =&#x3e; {
+                print(&#x27;General:background&#x27;, `Parsing colour ${ hex }`);
+                const rgba = color(hex).toRgb();
+
+                return Jimp.rgbaToInt(rgba.r, rgba.g, rgba.b, rgba.a * HEX_MAX);
+            },
+            source: (source, callback) =&#x3e; {
+                let sourceset = [];
+
+                print(&#x27;General:source&#x27;, `Source type is ${ typeof source }`);
+                if (!source || !source.length) {
+                    return callback(&#x27;No source provided&#x27;);
+                } else if (Buffer.isBuffer(source)) {
+                    sourceset = [{ size: sizeOf(source), file: source }];
+                    callback(null, sourceset);
+                } else if (Array.isArray(source)) {
+                    async.each(source, (file, cb) =&#x3e;
+                        readFile(file, (error, buffer) =&#x3e; {
+                            if (error) {
+                                return cb(error);
+                            }
+
+                            sourceset.push({
+                                size: sizeOf(buffer),
+                                file: buffer
+                            });
+                            cb(null);
+                        }),
+                        (error) =&#x3e;
+                            callback(error || sourceset.length ? null : &#x27;Favicons source is invalid&#x27;, sourceset)
+                    );
+                } else if (typeof source === &#x27;string&#x27;) {
+                    readFile(source, (error, buffer) =&#x3e; {
+                        if (error) {
+                            return callback(error);
+                        }
+
+                        sourceset = [{ size: sizeOf(buffer), file: buffer }];
+                        callback(null, source ...</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.favicons.helpers_es5" id="apidoc.module.favicons.helpers_es5">module favicons.helpers_es5</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.favicons.helpers_es5.helpers_es5" id="apidoc.element.favicons.helpers_es5.helpers_es5">
+        function <span class="apidocSignatureSpan">favicons.</span>helpers_es5
+        <span class="apidocSignatureSpan">(options)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function helpers(options) {
+
+    function contains(array, element) {
+        return array.indexOf(element.toLowerCase()) &#x3e; NON_EXISTANT;
+    }
+
+    function relative(directory) {
+        return path.join(options.path, directory).replace(/\\/g, &#x27;/&#x27;);
+    }
+
+    function print(context, message) {
+        var newMessage = &#x27;&#x27;;
+
+        if (options.logging &#x26;&#x26; message) {
+            _.each(message.split(&#x27; &#x27;), function (item) {
+                newMessage += &#x27; &#x27; + (/^\d+x\d+$/gm.test(item) ? colors.magenta(item) : item);
+            });
+            console.log(colors.green(&#x27;[Favicons]&#x27;) + &#x27; &#x27; + context.yellow + &#x27;:&#x27; + newMessage + &#x27;...&#x27;);
+        }
+    }
+
+    function readFile(filepath, callback) {
+        fs.readFile(filepath, callback);
+    }
+
+    function updateDocument(document, code, tags, next) {
+        var $ = cheerio.load(document, { decodeEntities: false }),
+            target = $(&#x27;head&#x27;).length &#x3e; 0 ? $(&#x27;head&#x27;) : $.root(),
+            newCode = cheerio.load(code.join(&#x27;\n&#x27;), { decodeEntities: false });
+
+        async.each(tags, function (platform, callback) {
+            async.forEachOf(platform, function (tag, selector, cb) {
+                if (options.replace) {
+                    $(selector).remove();
+                } else if ($(selector).length) {
+                    newCode(selector).remove();
+                }
+                return cb(null);
+            }, callback);
+        }, function (error) {
+            target.append(newCode.html());
+            return next(error, $.html().replace(/^\s*$[\n\r]{1,}/gm, &#x27;&#x27;));
+        });
+    }
+
+    function preparePlatformOptions(platform, options) {
+        if ((typeof options === &#x27;undefined&#x27; ? &#x27;undefined&#x27; : _typeof(options)) != &#x27;object&#x27;) {
+            options = {};
+        }
+
+        _.each(options, function (value, key) {
+            var platformOptionsRef = PLATFORM_OPTIONS[key];
+
+            if (typeof platformOptionsRef == &#x27;undefined&#x27; || platformOptionsRef.platforms.indexOf(platform) == -1) {
+                return Reflect.deleteProperty(options, key);
+            }
+        });
+
+        _.each(PLATFORM_OPTIONS, function (_ref, key) {
+            var platforms = _ref.platforms;
+            var defaultTo = _ref.defaultTo;
+
+            if (typeof options[key] == &#x27;undefined&#x27; &#x26;&#x26; platforms.indexOf(platform) != -1) {
+                options[key] = defaultTo;
+            }
+        });
+
+        return options;
+    }
+
+    return {
+
+        General: {
+            preparePlatformOptions: preparePlatformOptions,
+            background: function background(hex) {
+                print(&#x27;General:background&#x27;, &#x27;Parsing colour &#x27; + hex);
+                var rgba = color(hex).toRgb();
+
+                return Jimp.rgbaToInt(rgba.r, rgba.g, rgba.b, rgba.a * HEX_MAX);
+            },
+            source: function source(_source, callback) {
+                var sourceset = [];
+
+                print(&#x27;General:source&#x27;, &#x27;Source type is &#x27; + (typeof _source === &#x27;undefined&#x27; ? &#x27;undefined&#x27; : _typeof(_source)));
+                if (!_source || !_source.length) {
+                    return callback(&#x27;No source provided&#x27;);
+                } else if (Buffer.isBuffer(_source)) {
+                    sourceset = [{ size: sizeOf(_source), file: _source }];
+                    callback(null, sourceset);
+                } else if (Array.isArray(_source)) {
+                    async.each(_source, function (file, cb) {
+                        return readFile(file, function (error, buffer) {
+                            if (error) {
+                                return cb(error);
+                            }
+
+                            sourceset.push({
+                                size: sizeOf(buffer),
+                                file: buffer
+                            });
+                            cb(null);
+                        });
+                    }, function (error) {
+                        return callback(error || sourceset.length ? null : &#x27;Favicons source is invalid&#x27;, sourceset);
+                    });
+                } else if (typeof _source === &#x27;string&#x27;) {
+                    readFile(_so ...</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.favicons.stream" id="apidoc.module.favicons.stream">module favicons.stream</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.favicons.stream.stream" id="apidoc.element.favicons.stream.stream">
+        function <span class="apidocSignatureSpan">favicons.</span>stream
+        <span class="apidocSignatureSpan">(params, handleHtml)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function stream(params, handleHtml) {
+
+    const config = clone(configDefaults),
+        µ = helpers(params);
+
+    function processDocuments (documents, html, callback) {
+        async.each(documents, (document, cb) =&#x3e;
+            µ.HTML.update(document, html, config.html, cb),
+        (error) =&#x3e;
+            callback(error));
+    }
+
+<span class="apidocCodeCommentSpan">    /* eslint func-names: 0, no-invalid-this: 0 */
+</span>    return through2.obj(function (file, encoding, callback) {
+        const that = this;
+
+        if (file.isNull()) {
+            return callback(null, file);
+        }
+
+        if (file.isStream()) {
+            return callback(new Error(&#x27;[gulp-favicons] Streaming not supported&#x27;));
+        }
+
+        async.waterfall([
+            (cb) =&#x3e;
+                favicons(file.contents, params, cb),
+            (response, cb) =&#x3e;
+                async.each(response.images.concat(response.files), (image, c) =&#x3e; {
+                    that.push(µ.General.vinyl(image));
+                    c();
+                }, (error) =&#x3e;
+                    cb(error, response)),
+            (response, cb) =&#x3e; {
+                if (handleHtml) {
+                    handleHtml(response.html);
+                    return cb(null);
+                }
+                if (params.html &#x26;&#x26; !params.pipeHTML) {
+                    const documents = typeof params.html === &#x27;object&#x27; ? params.html : [params.html];
+
+                    processDocuments(documents, response.html, cb);
+                } else {
+                    return cb(null);
+                }
+            }
+        ], (error) =&#x3e;
+            callback(error));
+    });
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.favicons.toString" id="apidoc.module.favicons.toString">module favicons.toString</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.favicons.toString.toString" id="apidoc.element.favicons.toString.toString">
+        function <span class="apidocSignatureSpan">favicons.</span>toString
+        <span class="apidocSignatureSpan">()</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function builtin() {
+  var vHandler = safeWeakMapGet(directProxies, this);
+  if (vHandler !== undefined) {
+    return builtin.call(vHandler.target);
+  } else {
+    return primitive.call(this);
+  }
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+});
+options.background = &#x27;#&#x27; + color(options.background).toHex();
+request.master_picture.content = (svgSource || _.max(sourceset, function (_ref2) {
+    var _ref2$size = _ref2.size;
+    var width = _ref2$size.width;
+    var height = _ref2$size.height;
+    return Math.max(width, height);
+})).file.<span class="apidocCodeKeywordSpan">toString</span>(&#x27;base64&#x27;);
+request.files_location.path = options.path;
+
+if (options.icons.android) {
+    request.favicon_design.android_chrome.theme_color = options.background;
+    request.favicon_design.android_chrome.manifest.name = options.appName;
+    request.favicon_design.android_chrome.manifest.display = options.display;
+    request.favicon_design.android_chrome.manifest.orientation = options.orientation;
+...</pre></li>
+    </ul>
 
 
 </div>
