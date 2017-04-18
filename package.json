@@ -1,7 +1,7 @@
 {
     "author": "kai zhu <kaizhu256@gmail.com>",
     "buildNpmdoc": "favicons",
-    "description": "api documentation for [favicons (v4.8.3)](https://github.com/haydenbleasel/favicons) [![npm package](https://img.shields.io/npm/v/npmdoc-favicons.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-favicons) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-favicons.svg)](https://travis-ci.org/npmdoc/node-npmdoc-favicons)",
+    "description": "#### api documentation for  [favicons (v4.8.3)](https://github.com/haydenbleasel/favicons)  [![npm package](https://img.shields.io/npm/v/npmdoc-favicons.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-favicons) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-favicons.svg)](https://travis-ci.org/npmdoc/node-npmdoc-favicons)",
     "devDependencies": {
         "electron-lite": "kaizhu256/node-electron-lite#alpha",
         "favicons": "*",
@@ -36,5 +36,5 @@
         "start": "(set -e; export PORT=${PORT:-8080}; utility2 start test.js)",
         "test": "(set -e; export PORT=$(utility2 shServerPortRandom); utility2 test test.js)"
     },
-    "version": "0.0.1"
+    "version": "0.0.2"
 }
