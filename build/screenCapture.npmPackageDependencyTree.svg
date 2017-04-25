@@ -42,7 +42,7 @@
 <tspan x="10" y="634">  │ │ ├─┬ parse-bmfont-xml@1.1.3 </tspan>
 <tspan x="10" y="650">  │ │ │ └── xml-parse-from-string@1.0.0 </tspan>
 <tspan x="10" y="666">  │ │ └─┬ xhr@2.4.0 </tspan>
-<tspan x="10" y="682">  │ │   ├─┬ global@4.3.1 </tspan>
+<tspan x="10" y="682">  │ │   ├─┬ global@4.3.2 </tspan>
 <tspan x="10" y="698">  │ │   │ ├─┬ min-document@2.19.0 </tspan>
 <tspan x="10" y="714">  │ │   │ │ └── dom-walk@0.1.1 </tspan>
 <tspan x="10" y="730">  │ │   │ └── process@0.5.2 </tspan>
