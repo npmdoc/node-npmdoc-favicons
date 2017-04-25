@@ -1,6 +1,6 @@
 # npmdoc-favicons
 
-#### api documentation for  [favicons (v4.8.3)](https://github.com/haydenbleasel/favicons)  [![npm package](https://img.shields.io/npm/v/npmdoc-favicons.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-favicons) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-favicons.svg)](https://travis-ci.org/npmdoc/node-npmdoc-favicons)
+#### basic api documentation for  [favicons (v4.8.3)](https://github.com/haydenbleasel/favicons)  [![npm package](https://img.shields.io/npm/v/npmdoc-favicons.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-favicons) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-favicons.svg)](https://travis-ci.org/npmdoc/node-npmdoc-favicons)
 
 #### Favicon generator for Node.js
 
@@ -89,7 +89,8 @@
         "prepublish": "gulp",
         "test": "cd test && node test.js && gulp"
     },
-    "version": "4.8.3"
+    "version": "4.8.3",
+    "bin": {}
 }
 ```
 
